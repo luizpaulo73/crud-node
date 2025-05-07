@@ -1,75 +1,90 @@
 const bancoDeDados = {
     contas: [],
     lastId: 0
-  };
-  
-  // Criar uma nova conta
-  function criarConta(nomeUsuario, email) {
+};
+
+function criarConta(nomeUsuario, email) {
     const novaConta = {
-      id: ++bancoDeDados.lastId,
-      nomeUsuario,
-      email,
-      saldo: 0
+        id: ++bancoDeDados.lastId,
+        nomeUsuario,
+        email,
+        saldo: 0
     };
-    
+  
     bancoDeDados.contas.push(novaConta);
     return novaConta;
-  }
-  
-  // Buscar conta por ID
-  function listarContaPorId(id) {
+}
+
+function listarContaPorId(id) {
     return bancoDeDados.contas.find(conta => conta.id == id);
-  }
-  
-  // Listar todas as contas
-  function listarContas() {
+}
+
+function listarContas() {
     return bancoDeDados.contas;
-  }
-  
-  // Depositar valor
-  function depositar(id, valor) {
+}
+
+function depositar(id, valor) {
+    if (valor <= 0) {
+        console.log("Depósito falhou: Valor inválido.");
+        return null;
+    }
+
     const conta = listarContaPorId(id);
     if (conta) {
-      conta.saldo += valor;
-      return conta;
+        conta.saldo += valor;
+        return conta;
     }
     return null;
-  }
-  function sacar(id, valor) {
+}
+
+function sacar(id, valor) {
+    if (valor <= 0) {
+        console.log("Saque falhou: Valor inválido.");
+        return null;
+    }
+
     const conta = listarContaPorId(id);
     if (conta && conta.saldo >= valor) {
-      conta.saldo -= valor;
-      return conta;
+        conta.saldo -= valor;
+        return conta;
     }
-    return null;
-  }
 
-  function transferir(idComprador, idVendedor, valor) {
+    console.log("Saque falhou: Saldo insuficiente ou conta não encontrada.");
+    return null;
+}
+
+function transferir(idComprador, idVendedor, valor) {
+    if (valor <= 0) {
+        console.log("Transferência falhou: Valor inválido.");
+        return null;
+    }
+
     const contaComprador = listarContaPorId(idComprador);
     const contaVendedor = listarContaPorId(idVendedor);
 
-    console.log("Conta Comprador:", contaComprador);
-    console.log("Conta Vendedor:", contaVendedor);
-    console.log("Valor da transferência:", valor);
-
-    if (contaComprador && contaVendedor && contaComprador.saldo >= valor) {
-        contaComprador.saldo -= valor;
-        contaVendedor.saldo += valor;
-        return { comprador: contaComprador, vendedor: contaVendedor };
+    if (!contaComprador || !contaVendedor) {
+        console.log("Transferência falhou: Conta(s) não encontrada(s).");
+        return null;
     }
 
-    console.log("Transferência falhou: Verifique os IDs ou o saldo.");
-    return null;
+    if (contaComprador.saldo < valor) {
+        console.log("Transferência falhou: Saldo insuficiente.");
+        return null;
+    }
+
+    contaComprador.saldo -= valor;
+    contaVendedor.saldo += valor;
+    return { comprador: contaComprador, vendedor: contaVendedor };
 }
   
-  function excluirConta(id) {
+function excluirConta(id) {
     const index = bancoDeDados.contas.findIndex(conta => conta.id == id);
     if (index !== -1) {
-      bancoDeDados.contas.splice(index, 1);
-      return true;
+        bancoDeDados.contas.splice(index, 1);
+        return true;
     }
     return false;
-  }
+}
 
 module.exports = {
     criarConta,

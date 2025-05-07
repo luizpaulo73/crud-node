@@ -5,18 +5,23 @@ const { getContasRepository,
 
 async function getContas(ctx) {
     const contas = await getContasRepository();
-    if (!contas) {
+    if (!contas || contas.length === 0) {
         ctx.status = 404;
-        ctx.body = { message: 'Contas não encontradas' };
+        ctx.body = { message: 'Nenhuma conta encontrada' };
         return;
     }
     ctx.body = contas;
-
 }
 
 async function getContaPorId(ctx) {
     const { id } = ctx.params;
-    
+
+    if (!id || isNaN(id) || id <= 0) {
+        ctx.status = 400;
+        ctx.body = { message: 'ID inválido. O ID deve ser um número positivo.' };
+        return;
+    }
+
     const conta = await getContaPorIdRepository(id);
     if (!conta) {
         ctx.status = 404;
@@ -48,7 +53,19 @@ async function criarConta(ctx) {
 async function deletarConta(ctx) {
     const { id } = ctx.params;
 
+    if (!id || isNaN(id) || id <= 0) {
+        ctx.status = 400;
+        ctx.body = { message: 'ID inválido. O ID deve ser um número positivo.' };
+        return;
+    }
+
     const contaDeletada = await deletarContaRepository(id);
+    if (!contaDeletada) {
+        ctx.status = 404;
+        ctx.body = { message: 'Conta não encontrada para exclusão' };
+        return;
+    }
+
     ctx.status = 204;
 }
 

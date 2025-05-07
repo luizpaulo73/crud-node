@@ -6,6 +6,10 @@ async function getContasRepository() {
 }
 
 async function getContaPorIdRepository(id) {
+    if (!id || isNaN(id) || id <= 0) {
+        throw new Error('ID inválido. O ID deve ser um número positivo.');
+    }
+
     const conta = await db.listarContaPorId(id);
     if (!conta) {
         throw new Error('Conta não encontrada');
@@ -25,11 +29,15 @@ async function criarContaRepository(nomeUsuario, email) {
 }
 
 async function deletarContaRepository(id) {
-    const conta = await db.excluirConta(id)
-    if (!conta) {
-        throw new Error('Conta não encontrada')
+    if (!id || isNaN(id) || id <= 0) {
+        throw new Error('ID inválido. O ID deve ser um número positivo.');
     }
-    return `Conta com id: ${id} deletada`
+
+    const conta = await db.excluirConta(id);
+    if (!conta) {
+        throw new Error('Conta não encontrada');
+    }
+    return `Conta com id: ${id} deletada`;
 }
 
 module.exports = { getContasRepository, criarContaRepository, getContaPorIdRepository, deletarContaRepository };

@@ -3,10 +3,6 @@ const { depositarRepository, sacarRepository, transferirRepository } = require("
 async function transferirController(ctx) {
     const { idComprador, idVendedor, valor } = ctx.request.body;
 
-    console.log("idComprador:", idComprador);
-    console.log("idVendedor:", idVendedor);
-    console.log("valor:", valor);
-
     if (!idComprador || !idVendedor || !valor || valor <= 0) {
         ctx.status = 400;
         return ctx.body = {
@@ -38,31 +34,60 @@ async function depositarController(ctx) {
     const { id } = ctx.params;
     const { valor } = ctx.request.body;
 
-    const deposito = await depositarRepository(id, valor)
-
-    ctx.body = {
-        status: "success",
-        message: "Deposito realizado com sucesso",
-        data: deposito
+    if (!valor || valor <= 0) {
+        ctx.status = 400;
+        return ctx.body = {
+            status: "error",
+            message: "Valor inválido. O depósito deve ser maior que zero."
+        };
     }
+
+    const deposito = await depositarRepository(id, valor);
+
+    if (!deposito) {
+        ctx.status = 400;
+        return ctx.body = {
+            status: "error",
+            message: "Depósito não realizado. Verifique o ID da conta."
+        };
+    }
+
     ctx.status = 200;
+    return ctx.body = {
+        status: "success",
+        message: "Depósito realizado com sucesso",
+        data: deposito
+    };
 }
 
 async function sacarController(ctx) {
     const { id } = ctx.params;
     const { valor } = ctx.request.body;
-    
-    const saque = await sacarRepository(id, valor)
 
+    if (!valor || valor <= 0) {
+        ctx.status = 400;
+        return ctx.body = {
+            status: "error",
+            message: "Valor inválido. O saque deve ser maior que zero."
+        };
+    }
 
+    const saque = await sacarRepository(id, valor);
 
-    ctx.body = {
+    if (!saque) {
+        ctx.status = 400;
+        return ctx.body = {
+            status: "error",
+            message: "Saque não realizado. Verifique o ID da conta ou o saldo disponível."
+        };
+    }
+
+    ctx.status = 200;
+    return ctx.body = {
         status: "success",
         message: "Saque realizado com sucesso",
         data: saque
-    }
-    ctx.status = 200;
-
+    };
 }
 
 module.exports = { depositarController, transferirController, sacarController }
