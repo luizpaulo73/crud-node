@@ -24,4 +24,12 @@ async function criarContaRepository(nomeUsuario, email) {
     return conta;
 }
 
-module.exports = { getContasRepository, criarContaRepository, getContaPorIdRepository };
+async function deletarContaRepository(id) {
+    const conta = await db.excluirConta(id)
+    if (!conta) {
+        throw new Error('Conta não encontrada')
+    }
+    return `Conta com id: ${id} deletada`
+}
+
+module.exports = { getContasRepository, criarContaRepository, getContaPorIdRepository, deletarContaRepository };

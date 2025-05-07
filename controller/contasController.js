@@ -1,6 +1,7 @@
 const { getContasRepository,
         getContaPorIdRepository,
-        criarContaRepository } = require('../repository/contaRepository.js');
+        criarContaRepository,
+        deletarContaRepository } = require('../repository/contaRepository.js');
 
 async function getContas(ctx) {
     const contas = await getContasRepository();
@@ -44,4 +45,11 @@ async function criarConta(ctx) {
     }
 }
 
-module.exports = { getContas, criarConta, getContaPorId };
+async function deletarConta(ctx) {
+    const { id } = ctx.params;
+
+    const contaDeletada = await deletarContaRepository(id);
+    ctx.status = 204;
+}
+
+module.exports = { getContas, criarConta, getContaPorId, deletarConta };

@@ -58,10 +58,7 @@ const bancoDeDados = {
 module.exports = {
     criarConta,
     listarContaPorId,
-    buscarContaPorEmail,
-    buscarContaPorNome,
     listarContas,
-    atualizarSaldo,
     depositar,
     sacar,
     excluirConta
