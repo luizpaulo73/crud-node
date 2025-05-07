@@ -12,8 +12,9 @@ router
     .get("/contas/:id", contasController.getContaPorId)
     .post("/conta", contasController.criarConta)
     .delete("/contas/:id", contasController.deletarConta)
-    .post("/contas/:id/transferir", transacaoController.transferir)
+    .post("/contas/transferir", transacaoController.transferirController)
     .post("/deposito/:id", transacaoController.depositarController)
+    .post("/saque/:id", transacaoController.sacarController)
 
 app
     .use(bodyParser())

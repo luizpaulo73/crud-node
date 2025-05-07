@@ -35,8 +35,6 @@ const bancoDeDados = {
     }
     return null;
   }
-  
-  // Sacar valor
   function sacar(id, valor) {
     const conta = listarContaPorId(id);
     if (conta && conta.saldo >= valor) {
@@ -45,6 +43,24 @@ const bancoDeDados = {
     }
     return null;
   }
+
+  function transferir(idComprador, idVendedor, valor) {
+    const contaComprador = listarContaPorId(idComprador);
+    const contaVendedor = listarContaPorId(idVendedor);
+
+    console.log("Conta Comprador:", contaComprador);
+    console.log("Conta Vendedor:", contaVendedor);
+    console.log("Valor da transferência:", valor);
+
+    if (contaComprador && contaVendedor && contaComprador.saldo >= valor) {
+        contaComprador.saldo -= valor;
+        contaVendedor.saldo += valor;
+        return { comprador: contaComprador, vendedor: contaVendedor };
+    }
+
+    console.log("Transferência falhou: Verifique os IDs ou o saldo.");
+    return null;
+}
   
   function excluirConta(id) {
     const index = bancoDeDados.contas.findIndex(conta => conta.id == id);
@@ -61,5 +77,6 @@ module.exports = {
     listarContas,
     depositar,
     sacar,
-    excluirConta
+    excluirConta,
+    transferir
   };
