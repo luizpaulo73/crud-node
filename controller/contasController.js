@@ -16,9 +16,9 @@ async function getContas(ctx) {
 async function getContaPorId(ctx) {
     const { id } = ctx.params;
 
-    if (!id || isNaN(id) || id <= 0) {
+    if (!id) {
         ctx.status = 400;
-        ctx.body = { message: 'ID inválido. O ID deve ser um número positivo.' };
+        ctx.body = { message: 'ID inválido.' };
         return;
     }
 
@@ -53,9 +53,9 @@ async function criarConta(ctx) {
 async function deletarConta(ctx) {
     const { id } = ctx.params;
 
-    if (!id || isNaN(id) || id <= 0) {
+    if (!id) {
         ctx.status = 400;
-        ctx.body = { message: 'ID inválido. O ID deve ser um número positivo.' };
+        ctx.body = { message: 'ID inválido.' };
         return;
     }
 

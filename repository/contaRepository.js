@@ -1,43 +1,120 @@
 const db = require('../db.js');
+const AWS = require('aws-sdk');
+const { v4: uuidv4 } = require('uuid');
+
+const documentClient = new AWS.DynamoDB.DocumentClient({
+    region: 'us-east-1',
+    endpoint: 'http://localhost:8000',
+    accessKeyId: 'fakeMyKeyId',
+    secretAccessKey: 'fakeSecretAccessKey',
+});
+
+    /**
+    * Cria uma nova conta no Dynamodb
+    * @param {string} nomeUsuario
+    * @param {string} email
+    * @returns {Promise<Object>}  
+    */
 
 async function getContasRepository() {
-    const contas = await db.listarContas();
-    return contas;
+    const params = {
+        TableName: 'Conta',
+    }
+
+    try {
+        const data = await documentClient.scan(params).promise();
+        return data.Items;
+    } catch (err) {
+        console.error(err);
+    }
 }
 
 async function getContaPorIdRepository(id) {
-    if (!id || isNaN(id) || id <= 0) {
-        throw new Error('ID inválido. O ID deve ser um número positivo.');
+    if (!id) {
+        throw new Error('ID inválido.');
     }
 
-    const conta = await db.listarContaPorId(id);
-    if (!conta) {
-        throw new Error('Conta não encontrada');
+    const params = {
+        TableName: 'Conta',
+        KeyConditionExpression: 'PK = :id',
+        ExpressionAttributeValues: {
+            ':id': `CLIENTE#${id}`
+        }
     }
-    return conta;
+
+    try {
+        const data = await documentClient.query(params).promise();
+        return data.Items;
+    } catch (err) {
+        console.error(err);
+    }
 }
 
 async function criarContaRepository(nomeUsuario, email) {
     if (!nomeUsuario || !email) {
-        throw new Error('Nome de usuário e email são obrigatórios');
+        throw new Error('Nome de usuário e e-mail são obrigatórios');
     }
-    const conta = await db.criarConta(nomeUsuario, email);
-    if (!conta) {
+
+    const clienteId = uuidv4();
+
+    const cliente = {
+        PK: `CLIENTE#${clienteId}`,
+        SK: `METADADOS`,
+        nomeUsuario,
+        email
+    }
+
+    const conta = {
+        PK: `CLIENTE#${clienteId}`,
+        SK: "CONTA#CORRENTE",
+        saldo: 0
+    }
+
+    try {
+        await documentClient.put({TableName: 'Conta', Item: cliente}).promise();
+        await documentClient.put({TableName: 'Conta', Item: conta}).promise();
+        return {cliente, conta};
+    } catch (error) {
+        console.log("Erro ao criar conta: ", error);
         throw new Error('Erro ao criar conta');
     }
-    return conta;
 }
 
 async function deletarContaRepository(id) {
-    if (!id || isNaN(id) || id <= 0) {
+    if (!id) {
         throw new Error('ID inválido. O ID deve ser um número positivo.');
     }
 
-    const conta = await db.excluirConta(id);
-    if (!conta) {
-        throw new Error('Conta não encontrada');
+    const params = {
+        TableName: 'Conta',
+        KeyConditionExpression: 'PK = :id',
+        ExpressionAttributeValues: {
+            ':id': `CLIENTE#${id}`
+        }
     }
-    return `Conta com id: ${id} deletada`;
+
+    try {
+        const data = await documentClient.query(params).promise();
+    
+        if (data.Items.length === 0) {
+            return {message: "Nenhum dado encontrado para esse cliente"}
+        }
+
+        for (const item of data.Items) {
+            const paramsDelete = {
+                TableName: 'Conta',
+                Key: {
+                    PK: item.PK,
+                    SK: item.SK
+                }
+            }
+
+            await documentClient.delete(paramsDelete).promise();
+        }
+
+    } catch (err) {
+        console.log("Erro ao deletar conta: ", err);
+    }
 }
 
 module.exports = { getContasRepository, criarContaRepository, getContaPorIdRepository, deletarContaRepository };

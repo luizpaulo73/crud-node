@@ -7,14 +7,24 @@ const transacaoController = require('./controller/transacaoController.js')
 const app = new koa();
 const router = new Router();
 
+const AWS = require('aws-sdk');
+
+const dynamoDb = new AWS.DynamoDB.DocumentClient({
+  region: 'local',
+  endpoint: 'http://localhost:8000',
+  accessKeyId: 'user123',
+  secretAccessKey: 'pass123'
+});
+
+
 router
     .get("/contas", contasController.getContas)
     .get("/contas/:id", contasController.getContaPorId)
     .post("/conta", contasController.criarConta)
     .delete("/contas/:id", contasController.deletarConta)
-    .post("/contas/transferir", transacaoController.transferirController)
-    .post("/deposito/:id", transacaoController.depositarController)
-    .post("/saque/:id", transacaoController.sacarController)
+    .put("/contas/transferir", transacaoController.transferirController)
+    .put("/deposito/:id", transacaoController.depositarController)
+    .put("/saque/:id", transacaoController.sacarController)
 
 app
     .use(bodyParser())

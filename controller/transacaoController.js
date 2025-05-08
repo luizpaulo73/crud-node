@@ -34,7 +34,7 @@ async function depositarController(ctx) {
     const { id } = ctx.params;
     const { valor } = ctx.request.body;
 
-    if (!valor || valor <= 0) {
+    if (!valor) {
         ctx.status = 400;
         return ctx.body = {
             status: "error",
