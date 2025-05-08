@@ -1,10 +1,16 @@
-start-db:
-	docker-compose up -d dynamodb-local
+start:
+	docker-compose up --build -d
 
 setup-db:
-	node ./setup/setupDynamoDB.js
+	docker exec app-node node ./setup/setupDynamoDB.js
 
-start-app:
-	node server.js
+restart-app:
+	docker-compose restart app
 
-dev: start-db setup-db start-app
+stop:
+	docker-compose down
+
+logs:
+	docker-compose logs -f app
+
+dev: start setup-db logs

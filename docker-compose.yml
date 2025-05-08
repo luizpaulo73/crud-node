@@ -1,11 +1,24 @@
 
 services:
- dynamodb-local:
-   command: "-jar DynamoDBLocal.jar -sharedDb -dbPath ./data"
-   image: "amazon/dynamodb-local:latest"
-   container_name: dynamodb-local
-   ports:
-     - "8000:8000"
-   volumes:
-     - "./docker/dynamodb:/home/dynamodblocal/data"
-   working_dir: /home/dynamodblocal
+    app:
+        build: .
+        container_name: app-node
+        ports:
+            - "3000:3000"
+        volumes:
+            - .:/app
+            - /app/node_modules
+        command: npx nodemon --trace-warnings server.js
+        depends_on:
+            - dynamodb-local
+
+
+    dynamodb-local:
+        command: "-jar DynamoDBLocal.jar -sharedDb -dbPath ./data"
+        image: "amazon/dynamodb-local:latest"
+        container_name: dynamodb-local
+        ports:
+            - "8000:8000"
+        volumes:
+            - "./docker/dynamodb:/home/dynamodblocal/data"
+        working_dir: /home/dynamodblocal
