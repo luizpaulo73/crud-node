@@ -1,17 +1,14 @@
 
 services:
-    app:
+    app-node:
         build: .
         container_name: app-node
         ports:
-            - "3000:3000"
-        volumes:
-            - .:/app
-            - /app/node_modules
-        command: npx nodemon --trace-warnings server.js
+            - "3000:3000"  # Mapear a porta 3000 do container para a porta 3000 na sua máquina
         depends_on:
-            - dynamodb-local
-
+            - dynamodb-local  # Garante que o DynamoDB esteja rodando antes do app
+        volumes:
+            - .:/app  # Monta o diretório atual da máquina no diretório /app dentro do container
 
     dynamodb-local:
         command: "-jar DynamoDBLocal.jar -sharedDb -dbPath ./data"
