@@ -4,7 +4,7 @@ const { v4: uuidv4 } = require('uuid');
 
 const documentClient = new AWS.DynamoDB.DocumentClient({
     region: 'us-east-1',
-    endpoint: 'http://localhost:8000',
+    endpoint: 'http://dynamodb-local:8000',
     accessKeyId: 'fakeMyKeyId',
     secretAccessKey: 'fakeSecretAccessKey',
 });

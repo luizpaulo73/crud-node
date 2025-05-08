@@ -8,7 +8,8 @@ services:
         depends_on:
             - dynamodb-local  # Garante que o DynamoDB esteja rodando antes do app
         volumes:
-            - .:/app  # Monta o diretório atual da máquina no diretório /app dentro do container
+            - .:/app
+            - /app/node_modules  # Monta o diretório atual da máquina no diretório /app dentro do container
 
     dynamodb-local:
         command: "-jar DynamoDBLocal.jar -sharedDb -dbPath ./data"
