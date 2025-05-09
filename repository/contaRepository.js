@@ -1,4 +1,3 @@
-const db = require('../db.js');
 const AWS = require('aws-sdk');
 const { v4: uuidv4 } = require('uuid');
 
@@ -44,7 +43,7 @@ async function getContaPorIdRepository(id) {
 
     try {
         const data = await documentClient.query(params).promise();
-        return data.Items;
+        return data;
     } catch (err) {
         console.error(err);
     }

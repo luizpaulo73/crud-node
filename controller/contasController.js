@@ -28,6 +28,7 @@ async function getContaPorId(ctx) {
         ctx.body = { message: 'Conta não encontrada' };
         return;
     }
+    ctx.status = 200;
     ctx.body = conta;
 }
 
