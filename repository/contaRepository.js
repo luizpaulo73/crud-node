@@ -49,10 +49,11 @@ async function getContaPorIdRepository(id) {
         }
 
         return {
-            tabela: data.Item.SK.toLowerCase(),
-            idUsuario: data.Item.PK.split('#')[1],
-            nomeUsuario: data.Item.nomeUsuario,
-            email: data.Item.email,
+            cliente: {
+                idCliente: data.Item.PK.split('#')[1],
+                nomeCliente: data.Item.nomeUsuario,
+                email: data.Item.email,
+            }
         };
     } catch (err) {
         console.error(err);
@@ -82,7 +83,16 @@ async function criarContaRepository(nomeUsuario, email) {
     try {
         await documentClient.put({TableName: 'Conta', Item: cliente}).promise();
         await documentClient.put({TableName: 'Conta', Item: conta}).promise();
-        return {cliente, conta};
+        return {
+            cliente: {
+                idCliente: cliente.PK.split("#")[1],
+                nomeCliente: cliente.nomeUsuario,
+                email: cliente.email,
+                conta: {
+                    saldo: conta.saldo
+                }
+            }
+        };
     } catch (error) {
         console.log("Erro ao criar conta: ", error);
         throw new Error('Erro ao criar conta');
