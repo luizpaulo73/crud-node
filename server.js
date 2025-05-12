@@ -2,7 +2,8 @@ const koa = require('koa');
 const Router = require('koa-router');
 const bodyParser = require('koa-bodyparser');
 const contasController = require('./controller/contasController.js');
-const transacaoController = require('./controller/transacaoController.js')
+const transacaoController = require('./controller/transacaoController.js');
+const pixController = require('./controller/pixController.js');
 
 const app = new koa();
 const router = new Router();
@@ -18,7 +19,8 @@ router
     .put("/contas/transferir", transacaoController.transferirController)
     .put("/deposito/:id", transacaoController.depositarController)
     .put("/saque/:id", transacaoController.sacarController)
-    // .post("/cadastro/pix", transacaoController.cadastrarPixController)
+    .get("/pix/:id", pixController.buscarPixController)
+    .post("/cadastro/pix", pixController.cadastrarPixController)
 
 app
     .use(bodyParser())
