@@ -38,7 +38,7 @@ async function criarConta(ctx) {
 
         if (!nomeUsuario || !email) {
             ctx.status = 400;
-            ctx.body = { message: 'Nome de usuário e email são obrigatórios' };
+            ctx.body = { message: 'Todos os campos são obrigatórios' };
             return;
         }
 

@@ -7,15 +7,8 @@ const transacaoController = require('./controller/transacaoController.js')
 const app = new koa();
 const router = new Router();
 
-const AWS = require('aws-sdk');
-
-const dynamoDb = new AWS.DynamoDB.DocumentClient({
-  region: 'local',
-  endpoint: 'http://localhost:8000',
-  accessKeyId: 'user123',
-  secretAccessKey: 'pass123'
-});
-
+const tabela = require("./setup/setupDynamoDB.js")
+tabela.verificarOuCriarTabela();
 
 router
     .get("/contas", contasController.getContas)
@@ -25,6 +18,7 @@ router
     .put("/contas/transferir", transacaoController.transferirController)
     .put("/deposito/:id", transacaoController.depositarController)
     .put("/saque/:id", transacaoController.sacarController)
+    // .post("/cadastro/pix", transacaoController.cadastrarPixController)
 
 app
     .use(bodyParser())

@@ -8,12 +8,12 @@ const documentClient = new AWS.DynamoDB.DocumentClient({
     secretAccessKey: 'fakeSecretAccessKey',
 });
 
-    /**
-    * Cria uma nova conta no Dynamodb
-    * @param {string} nomeUsuario
-    * @param {string} email
-    * @returns {Promise<Object>}  
-    */
+/**
+* Cria uma nova conta no Dynamodb
+* @param {string} nomeUsuario
+* @param {string} email
+* @returns {Promise<Object>}  
+*/
 
 async function getContasRepository() {
     const params = {
@@ -22,7 +22,7 @@ async function getContasRepository() {
 
     try {
         const data = await documentClient.scan(params).promise();
-        return data.Items;
+        return data;
     } catch (err) {
         console.error(err);
     }
@@ -35,15 +35,25 @@ async function getContaPorIdRepository(id) {
 
     const params = {
         TableName: 'Conta',
-        KeyConditionExpression: 'PK = :id',
-        ExpressionAttributeValues: {
-            ':id': `CLIENTE#${id}`
+        Key: {
+            PK: `CLIENTE#${id}`,
+            SK: 'DADOS'
         }
-    }
+    };
 
     try {
-        const data = await documentClient.query(params).promise();
-        return data;
+        const data = await documentClient.get(params).promise();
+
+        if (!data.Item) {
+            throw new Error('Item não encontrado');
+        }
+
+        return {
+            tabela: data.Item.SK.toLowerCase(),
+            idUsuario: data.Item.PK.split('#')[1],
+            nomeUsuario: data.Item.nomeUsuario,
+            email: data.Item.email,
+        };
     } catch (err) {
         console.error(err);
     }
@@ -58,9 +68,9 @@ async function criarContaRepository(nomeUsuario, email) {
 
     const cliente = {
         PK: `CLIENTE#${clienteId}`,
-        SK: `METADADOS`,
+        SK: `DADOS`,
         nomeUsuario,
-        email
+        email,
     }
 
     const conta = {

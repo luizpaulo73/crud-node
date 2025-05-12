@@ -1,9 +1,9 @@
 const { depositarRepository, sacarRepository, transferirRepository } = require("../repository/transacaoRepository")
 
 async function transferirController(ctx) {
-    const { idComprador, idVendedor, valor } = ctx.request.body;
+    const { idPagador, idRecebedor, valor } = ctx.request.body;
 
-    if (!idComprador || !idVendedor || !valor || valor <= 0) {
+    if (!idPagador || !idRecebedor || !valor || valor <= 0) {
         ctx.status = 400;
         return ctx.body = {
             status: "error",
@@ -11,7 +11,7 @@ async function transferirController(ctx) {
         };
     }
 
-    const transferencia = await transferirRepository(idComprador, idVendedor, valor);
+    const transferencia = await transferirRepository(idPagador, idRecebedor, valor);
 
     if (!transferencia) {
         ctx.status = 400;
