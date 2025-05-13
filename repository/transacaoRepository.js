@@ -43,7 +43,7 @@ async function depositarRepository(id, valor) {
 
     const paramsExtrato = {
         PK: `CLIENTE#${id}`,
-        SK: `EXTRATO#DEPOSITO#${data}#${uuidv4()}`,
+        SK: `EXTRATO#DEPOSITO#${uuidv4()}`,
         tipo: 'DEPOSITO',
         valor,
         data,
@@ -93,7 +93,7 @@ async function sacarRepository(id, valor) {
 
     const paramsExtrato = {
         PK: `CLIENTE#${id}`,
-        SK: `EXTRATO#SAQUE#${data}#${uuidv4()}`,
+        SK: `EXTRATO#SAQUE#${uuidv4()}`,
         tipo: 'SAQUE',
         valor,
         data,
@@ -149,7 +149,7 @@ async function transferirRepository(idPagador, idRecebedor, valor) {
 
     const paramsExtratoPagador = {
         PK: `CLIENTE#${idPagador}`,
-        SK: `EXTRATO#SAIDA#${data}#${uuidv4()}`,
+        SK: `EXTRATO#SAIDA#${uuidv4()}`,
         tipo: 'TRANSFERENCIA',
         valor,
         data,
@@ -159,7 +159,7 @@ async function transferirRepository(idPagador, idRecebedor, valor) {
 
     const paramsExtratoRecebedor = {
         PK: `CLIENTE#${idRecebedor}`,
-        SK: `EXTRATO#ENTRADA#${data}#${uuidv4()}`,
+        SK: `EXTRATO#ENTRADA#${uuidv4()}`,
         tipo: 'TRANSFERENCIA',
         valor,
         data,
