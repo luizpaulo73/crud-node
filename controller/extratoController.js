@@ -8,15 +8,14 @@ async function buscarExtratoController(ctx) {
         ctx.body = { message: 'Id do cliente não informado.' }
         return
     }
-
-    const extratos = await buscarExtratoRepository(id, tipoTransferencia)
-    if (!extratos) {
-        ctx.status = 404;
-        ctx.body = { message: 'Extratos não encontrados' }
-        return
+    try {
+        const extratos = await buscarExtratoRepository(id, tipoTransferencia);
+        ctx.status = 200;
+        ctx.body = extratos;
+    } catch (error) {
+        ctx.status = error.status || 500;
+        ctx.body = { message: error.message || 'Erro ao buscar o extrato.' };
     }
-    ctx.status = 200;
-    ctx.body = extratos;
 }
 
 module.exports = { buscarExtratoController }

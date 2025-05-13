@@ -22,11 +22,7 @@ async function transferirController(ctx) {
     }
 
     ctx.status = 200;
-    return ctx.body = {
-        status: "success",
-        message: "Transferência realizada com sucesso",
-        data: transferencia
-    };
+    return ctx.body = {transferencia};
 }
 
 
@@ -53,11 +49,7 @@ async function depositarController(ctx) {
     }
 
     ctx.status = 200;
-    return ctx.body = {
-        status: "success",
-        message: "Depósito realizado com sucesso",
-        data: deposito
-    };
+    return ctx.body = {deposito};
 }
 
 async function sacarController(ctx) {
@@ -83,11 +75,7 @@ async function sacarController(ctx) {
     }
 
     ctx.status = 200;
-    return ctx.body = {
-        status: "success",
-        message: "Saque realizado com sucesso",
-        data: saque
-    };
+    return ctx.body = {saque};
 }
 
 module.exports = { depositarController, transferirController, sacarController }

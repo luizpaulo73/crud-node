@@ -1,4 +1,4 @@
-const { cadastrarPixRepository, buscarPixRepository } = require("../repository/pixRepository");
+const { cadastrarPixRepository, buscarPixRepository, realizarPixRepository } = require("../repository/pixRepository");
 const { detectarTipoChavePix } = require("../utils/validarPix");
 
 async function cadastrarPixController(ctx) {
@@ -47,7 +47,30 @@ async function buscarPixController(ctx) {
 }
 
 async function realizarPixController(ctx) {
-    
+    const { idPagador, valor, chave } = ctx.request.body;
+
+    if (!idPagador || !valor || !chave || valor <= 0) {
+        ctx.status = 400;
+        return ctx.body = {
+            message: "Parâmetros inválidos. Certifique-se de enviar IDs válidos e um valor maior que zero."
+        };
+    }
+
+    const transferenciaPix = await realizarPixRepository(idPagador, valor, chave);
+
+    if (!transferenciaPix) {
+        ctx.status = 400;
+        return ctx.body = {
+            status: "error",
+            message: "Transferência não realizada. Verifique os IDs e o saldo do comprador."
+        };
+    }
+    ctx.status = 200;
+    return ctx.body = {
+        status: "success",
+        message: "Transferência realizada com sucesso.",
+        data: transferenciaPix
+    }
 }
 
-module.exports = { cadastrarPixController, buscarPixController };
+module.exports = { cadastrarPixController, buscarPixController, realizarPixController };

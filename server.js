@@ -27,6 +27,7 @@ router
 
     .get("/pix/:id", pixController.buscarPixController)
     .post("/cadastro/pix", pixController.cadastrarPixController)
+    .put("/realizar/pix", pixController.realizarPixController)
 
 app
     .use(bodyParser())

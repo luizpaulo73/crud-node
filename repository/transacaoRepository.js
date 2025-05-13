@@ -53,8 +53,15 @@ async function depositarRepository(id, valor) {
     try {
         const data = await documentClient.update(paramsConta).promise();
         await documentClient.put({TableName: 'Conta', Item: paramsExtrato}).promise();
-        return data.Attributes; // retorna os dados atualizados
-        
+        return {
+            status: "success",
+            message: "Depósito realizado com sucesso",
+            data: {
+                id: data.Attributes.PK.split('#')[1],
+                conta: data.Attributes.SK.split('#')[1],
+                novoSaldo: data.Attributes.saldo
+            }
+        };
         
     } catch (err) {
         if (err.code === 'ConditionalCheckFailedException') {
@@ -103,7 +110,15 @@ async function sacarRepository(id, valor) {
     try {
         const data = await documentClient.update(paramsConta).promise();
         await documentClient.put({TableName: 'Conta', Item: paramsExtrato}).promise();
-        return data.Attributes; // retorna os dados atualizados
+        return {
+            status: "success",
+            message: "Saque realizado com sucesso.",
+            data: {
+                id: data.Attributes.PK.split('#')[1],
+                conta: data.Attributes.SK.split('#')[1],
+                novoSaldo: data.Attributes.saldo
+            }
+        };
         
     } catch (err) {
         return null;
@@ -172,7 +187,22 @@ async function transferirRepository(idPagador, idRecebedor, valor) {
         const dataRecebedor = await documentClient.update(paramsRecebedor).promise();
         await documentClient.put({TableName: 'Conta', Item: paramsExtratoPagador}).promise();
         await documentClient.put({TableName: 'Conta', Item: paramsExtratoRecebedor}).promise();
-        return {dataPagador, dataRecebedor}; // retorna os dados atualizados
+        return {
+            status: "success",
+            message: "Transferência realizada com sucesso",
+            data: {
+                dataPagador: {
+                    id: dataPagador.Attributes.PK.split('#')[1],
+                    conta: dataPagador.Attributes.SK.split('#')[1],
+                    saldo: dataPagador.Attributes.saldo
+                },
+                dataRecebedor: {
+                    id: dataRecebedor.Attributes.PK.split('#')[1],
+                    conta: dataRecebedor.Attributes.SK.split('#')[1],
+                    saldo: dataRecebedor.Attributes.saldo
+                }
+            }
+        };
         
         
     } catch (err) {

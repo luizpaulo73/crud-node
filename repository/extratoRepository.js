@@ -45,7 +45,7 @@ async function buscarExtratoRepository(idCliente, tipoTransferencia) {
             }))
         }
     } catch (error) {
-        throw new Error('Erro ao buscar Pix.');
+        throw new Error('Erro ao buscar Extrato.');
     }
 }
 
