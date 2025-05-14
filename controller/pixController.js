@@ -66,11 +66,7 @@ async function realizarPixController(ctx) {
         };
     }
     ctx.status = 200;
-    return ctx.body = {
-        status: "success",
-        message: "Transferência realizada com sucesso.",
-        data: transferenciaPix
-    }
+    return ctx.body = { transferenciaPix }
 }
 
 module.exports = { cadastrarPixController, buscarPixController, realizarPixController };
